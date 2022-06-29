@@ -1,26 +1,34 @@
 package sin.android.mybusscheduler.adapters
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+
+
 import androidx.recyclerview.widget.RecyclerView
 import sin.android.mybusscheduler.R
-import sin.android.mybusscheduler.database.AppDatabase
+
 import sin.android.mybusscheduler.database.Schedule
-import sin.android.mybusscheduler.databinding.ItemViewBinding
+
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.Executors
+
 
 //class BusStopAdapter(context: Context) : RecyclerView.Adapter<BusStopAdapter.BusStopViewHolder>() {
-    class BusStopAdapter(list :List<Schedule>) : RecyclerView.Adapter<BusStopAdapter.BusStopViewHolder>() {
+class BusStopAdapter(list: List<Schedule>) :
+    RecyclerView.Adapter<BusStopAdapter.BusStopViewHolder>() {
 
     //val binding=
 
-//    var allSchedules = AppDatabase.getDatabase(context).scheduleDao().getAll()
-    var allSchedules = list
+    //    var allSchedules = AppDatabase.getDatabase(context).scheduleDao().getAll()
+    private var allSchedules = list
+
+    var navController: NavController? = null
 
     class BusStopViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val busNametv = view.findViewById<TextView>(R.id.bus_stop_name_tv)
@@ -31,23 +39,31 @@ import java.util.concurrent.Executors
         val layout = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.item_view, parent, false)
-        return BusStopViewHolder(layout)
+        val viewHolder = BusStopViewHolder(layout)
+        val bundle = Bundle()
+        viewHolder.itemView.setOnClickListener {
+            bundle.putString("BusStopName", allSchedules.get(viewHolder.adapterPosition).stopName)
+            navController = Navigation.findNavController(it)
+            navController!!.navigate(R.id.namedStopBus,bundle)
+
+        }
+        return viewHolder//BusStopViewHolder(layout)
     }
 
     override fun onBindViewHolder(holder: BusStopViewHolder, position: Int) {
-        val item=allSchedules.get(position)
-        holder.busNametv.text=item.stopName
-        holder.busTimetv.text=SimpleDateFormat(
-"h.mm "
-        ).format(Date(item.arrivalTime.toLong()*1000))
+        val item = allSchedules.get(position)
+        holder.busNametv.text = item.stopName
+        holder.busTimetv.text = SimpleDateFormat(
+            "h.mm "
+        ).format(Date(item.arrivalTime.toLong() * 1000))
     }
 
     override fun getItemCount(): Int = allSchedules.size
 
- /*   private fun getAllSchedulers():List<Schedule>{
-        Executors.newCachedThreadPool().submit(Runnable {
-            return@Runnable AppDatabase.getDatabase(context).scheduleDao().getAll()
-        })
-    }
-*/
+    /*   private fun getAllSchedulers():List<Schedule>{
+           Executors.newCachedThreadPool().submit(Runnable {
+               return@Runnable AppDatabase.getDatabase(context).scheduleDao().getAll()
+           })
+       }
+   */
 }

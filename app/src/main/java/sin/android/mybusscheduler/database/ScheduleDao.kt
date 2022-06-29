@@ -11,7 +11,7 @@ interface ScheduleDao {
     fun getAll(): List<Schedule>
 
     @Query("SELECT * FROM schedule WHERE stop_name = :stopName")
-    fun getByStopName(stopName: String): List<Schedule>
+    fun trackByStopName(stopName: String): Observable<List<Schedule>>
 
 
     @Query("SELECT * FROM schedule")

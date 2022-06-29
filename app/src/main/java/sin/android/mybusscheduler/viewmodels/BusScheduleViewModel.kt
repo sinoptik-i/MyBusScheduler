@@ -27,6 +27,11 @@ class BusScheduleViewModel(application: Application) : AndroidViewModel(applicat
     fun trackSchedulers()=scheduleDao.trackAll().subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
 
+    fun trackNamedShedulers(busStopName: String)=scheduleDao.trackByStopName(busStopName)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+
+
     /*fun createObs() {
         val appDatabase = AppDatabase.getDatabase(requireContext())
         appDatabase.scheduleDao().getAll()
