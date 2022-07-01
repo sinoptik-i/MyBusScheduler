@@ -21,7 +21,7 @@ import java.util.*
 
 //class BusStopAdapter(context: Context) : RecyclerView.Adapter<BusStopAdapter.BusStopViewHolder>() {
 class BusStopAdapter(list: List<Schedule>) :
-    RecyclerView.Adapter<BusStopAdapter.BusStopViewHolder>() {
+    RecyclerView.Adapter<BusStopViewHolder>() {
 
     //val binding=
 
@@ -30,10 +30,7 @@ class BusStopAdapter(list: List<Schedule>) :
 
     var navController: NavController? = null
 
-    class BusStopViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val busNametv = view.findViewById<TextView>(R.id.bus_stop_name_tv)
-        val busTimetv = view.findViewById<TextView>(R.id.bus_stop_time_tv)
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusStopViewHolder {
         val layout = LayoutInflater

@@ -12,14 +12,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class NamedBusStopAdapter(list: List<Schedule>) :
-    RecyclerView.Adapter<NamedBusStopAdapter.BusStopViewHolder>() {
+    RecyclerView.Adapter<BusStopViewHolder>() {
 
     val allOneNamedScehdulers = list
 
-    class BusStopViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val busNametv = view.findViewById<TextView>(R.id.bus_stop_name_tv)
-        val busTimetv = view.findViewById<TextView>(R.id.bus_stop_time_tv)
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusStopViewHolder {
         return BusStopViewHolder(

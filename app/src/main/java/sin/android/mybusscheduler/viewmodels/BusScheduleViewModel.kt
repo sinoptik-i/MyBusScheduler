@@ -10,15 +10,14 @@ import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import sin.android.mybusscheduler.database.AppDatabase
 import sin.android.mybusscheduler.database.Schedule
 import sin.android.mybusscheduler.database.ScheduleDao
 
 class BusScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var _allSchedulers: List<Schedule>? = null
-    val allschedulers: List<Schedule>?
-        get() = _allSchedulers
 
     private val scheduleDao: ScheduleDao
         get() = AppDatabase.getDatabase(getApplication()).scheduleDao()
@@ -31,12 +30,9 @@ class BusScheduleViewModel(application: Application) : AndroidViewModel(applicat
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
 
+    fun flowSchedulers()=scheduleDao.trackAllFlow().flowOn(Dispatchers.IO)
 
-    /*fun createObs() {
-        val appDatabase = AppDatabase.getDatabase(requireContext())
-        appDatabase.scheduleDao().getAll()
-    }
-*/
+    fun flowNamedSchedulers(stopName:String)=scheduleDao.trackByStopNameFlow(stopName)
+        //.flowOn(Dispatchers.IO)
 
-    // private val allSchedulers=MutableLiveData(listOf(Schedule))
 }

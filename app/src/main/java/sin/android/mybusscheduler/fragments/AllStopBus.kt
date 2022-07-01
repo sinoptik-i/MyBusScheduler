@@ -7,11 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.coroutineScope
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import sin.android.mybusscheduler.R
 import sin.android.mybusscheduler.adapters.BusStopAdapter
+import sin.android.mybusscheduler.adapters.BusStopListAdapter
 import sin.android.mybusscheduler.database.AppDatabase
 import sin.android.mybusscheduler.databinding.FragmentAllStopBusBinding
 import sin.android.mybusscheduler.viewmodels.BusScheduleViewModel
@@ -33,22 +39,42 @@ class AllStopBus : Fragment() {
     ): View? {
         binding = FragmentAllStopBusBinding.inflate(inflater, container, false)
         return binding.root
-        //return inflater.inflate(R.layout.fragment_all_stop_bus, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun startAdapterRxJavaStyle() {
         recyclerView = binding.recyclerView
         busScheduleViewModel.trackSchedulers().subscribe({
             val adapter = BusStopAdapter(it)
             recyclerView.adapter = adapter
-            //  adapter.notifyDataSetChanged()
-
         },
             {
                 Log.e(TAG, "", it)
             }).also { disposables.add(it) }
 
+    }
+
+    fun startAdapterCorutinesStyle(view: View) {
+        recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val bundle = Bundle()
+        val navController = Navigation.findNavController(view)
+        val busStopListAdapter = BusStopListAdapter({
+            bundle.putString("BusStopName", it.stopName)
+            navController.navigate(R.id.namedStopBus, bundle)
+        })
+        recyclerView.adapter = busStopListAdapter
+        lifecycle.coroutineScope.launch {
+            busScheduleViewModel.flowSchedulers().collect {
+                busStopListAdapter.submitList(it)
+            }
+        }
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //startAdapterRxJavaStyle()
+        startAdapterCorutinesStyle(view)
     }
 
     override fun onDestroyView() {

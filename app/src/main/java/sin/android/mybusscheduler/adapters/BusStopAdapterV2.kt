@@ -12,9 +12,7 @@ class BusStopAdapterV2 : RecyclerView.Adapter<BusStopAdapterV2.BusStopViewHolder
 
     class BusStopViewHolder(
         private var binding: ItemViewBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-    }
+    ) : RecyclerView.ViewHolder(binding.root) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusStopViewHolder {
         val layout = ItemViewBinding.inflate(
